@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <title>Ascend</title>
+
+    <style>
+      canvas {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p></p>
+    <canvas></canvas>
+
+    <script>
+      const canvas = document.querySelector("canvas")
+      const ctx = canvas.getContext("2d")
+      ctx.font = "100px monospace"
+
+      function getPixelCount(char) {
+        const { width, height } = canvas
+
+        ctx.clearRect(0, 0, width, height)
+        ctx.fillText(char, 10, 80)
+
+        const { data } = ctx.getImageData(0, 0, width, height)
+
+        let count = 0
+
+        for (let i = 0; i < data.length; i += 4) {
+          const alpha = data[i + 3]
+          if (alpha > 0) count++
+        }
+
+        return count
+      }
+
+      const line =
+        "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?"
+          .split("")
+          .sort((a, b) => getPixelCount(a) - getPixelCount(b))
+          .join("")
+
+      document.querySelector("p").textContent = line
+    </script>
+  </body>
+</html>
